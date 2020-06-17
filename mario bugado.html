@@ -1,0 +1,169 @@
+<canvas id="cvs"></canvas>
+
+
+<div style='width: 100px; height: 100px; background-color: grey;'
+id="macaco" 
+></div>
+<style type="text/css">
+	#cvs{
+		border: 1px solid black;
+		margin: 20px 5%;
+	}
+
+</style>
+
+<script type="text/javascript">
+	var song = document.createElement('audio');
+	song.src='theme.mp3';
+
+	song.oncanplaythrough  = function(){
+		//document.body.appendChild(song)
+	}
+
+
+
+	//seta resolução do game
+	var cvs = document.getElementById('cvs');
+    var windowW = window.innerWidth - 20;
+    var windowH = window.innerHeight;
+    var ctx = cvs.getContext('2d');
+
+    cvs.width = windowW - (windowW * 0.1);
+    cvs.height = windowH - (windowH * 0.1);
+
+    var cvsWidth = cvs.width;
+    var cvsHeight = cvs.height;
+
+
+    
+    // load das sprites que serão utilizadas
+	var iddle = new Image();
+	iddle.src = 'img/player/iddle.png';
+
+	var fundo = new Image();
+	fundo.src = 'img/sky.png';
+
+	var hitbox = new Image();
+	hitbox.src = 'img/colision.png';
+
+	var tileTest = new Image();
+	tileTest.src = 'img/hitbox.png';
+
+    var tile = new Image();
+    tile.src = 'img/tile/tile.png';
+
+    var tileRoundR = new Image();
+    tileRoundR.src = 'img/tile/tile-RoundR.png';
+
+    var tileRoundL = new Image();
+    tileRoundL.src = 'img/tile/tile-RoundL.png';
+
+    var tile = new Image();
+    tile.src = 'img/tile/tile.png';
+
+    var run1 = new Image();
+    run1.src = 'img//player/run-1.png';
+
+    var run2 = new Image();
+    run2.src = 'img//player/run-2.png';
+
+    var run3 = new Image();
+    run3.src = 'img//player/run-3.png';
+
+    var crouch = new Image();
+    crouch.src = 'img/player/crouch.png';
+
+    var iddleR = new Image();
+    iddleR.src = 'img/player/iddle_right.png';
+
+    var runR = new Image();
+    runR.src = 'img/player/runR.gif';
+
+    var run2R = new Image();
+    run2R.src = 'img/player/run-2_right.png';
+
+    var run3R = new Image();
+    run3R.src = 'img/player/run-3_right.png';
+
+    var crouchR = new Image();
+    crouchR.src = 'img/player/crouch_right.png';
+
+    var tileImage = [null , tile, tileTest, tileRoundL, tileRoundR];
+    //==========================================
+   
+    // ================== engine ============
+
+    mario = {
+    	image: iddleR,
+    	x: 200,
+    	y: 400,
+    }
+
+
+
+    var quadrado = document.getElementById("macaco");
+
+
+
+    function andar(event){
+    	//alert(event.keyCode)
+
+    	if(event.keyCode == 39){
+    		mario.x += 10;
+    	}
+
+    	if(event.keyCode == 37){
+    		mario.x -= 10;
+    	}
+
+    	if(event.keyCode == 38){
+    		mario.y -= 10;
+    	}
+
+    	if(event.keyCode == 40){
+    		mario.y += 10;
+    	}
+
+    }
+
+    window.addEventListener('keydown', andar);
+    //controla o player
+	
+	// ============== view ===============/
+    //renderiza o game
+   
+
+    //mario.x = lerteclado;
+    function draw(){
+    	ctx.drawImage(fundo, 0,0, cvsWidth, cvsHeight);
+
+    	
+
+    	//desenha o player - layer 3
+    	ctx.drawImage(mario.image, mario.x, mario.y);
+
+
+
+
+
+    	
+    	
+		//console.log(controle.djump);
+    	requestAnimationFrame(draw)
+    }
+
+    //inicia o game
+    draw();
+
+
+		//=============	========================
+	document.body.onload = function(){
+		song.play();
+	}
+
+	
+	
+
+
+</script>
+

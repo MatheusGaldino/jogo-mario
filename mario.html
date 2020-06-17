@@ -1,0 +1,449 @@
+<canvas id="cvs"></canvas>
+
+<style type="text/css">
+	#cvs{
+		border: 1px solid black;
+		margin: 20px 5%;
+	}
+
+</style>
+
+<script type="text/javascript">
+	var song = document.createElement('audio');
+	song.src='theme.mp3';
+
+	song.oncanplaythrough  = function(){
+		//document.body.appendChild(song)
+	}
+
+
+
+	//seta resolução do game
+	var cvs = document.getElementById('cvs');
+    var windowW = window.innerWidth - 20;
+    var windowH = window.innerHeight;
+    var ctx = cvs.getContext('2d');
+
+    cvs.width = windowW - (windowW * 0.1);
+    cvs.height = windowH - (windowH * 0.1);
+
+    var cvsWidth = cvs.width;
+    var cvsHeight = cvs.height;
+
+
+    
+    // load das sprites que serão utilizadas
+	var iddle = new Image();
+	iddle.src = 'img/player/iddle.png';
+
+	var fundo = new Image();
+	fundo.src = 'img/sky.png';
+
+	var hitbox = new Image();
+	hitbox.src = 'img/colision.png';
+
+	var tileTest = new Image();
+	tileTest.src = 'img/hitbox.png';
+
+    var tile = new Image();
+    tile.src = 'img/tile/tile.png';
+
+    var tileRoundR = new Image();
+    tileRoundR.src = 'img/tile/tile-RoundR.png';
+
+    var tileRoundL = new Image();
+    tileRoundL.src = 'img/tile/tile-RoundL.png';
+
+    var tile = new Image();
+    tile.src = 'img/tile/tile.png';
+
+    var run1 = new Image();
+    run1.src = 'img//player/run-1.png';
+
+    var run2 = new Image();
+    run2.src = 'img//player/run-2.png';
+
+    var run3 = new Image();
+    run3.src = 'img//player/run-3.png';
+
+    var crouch = new Image();
+    crouch.src = 'img/player/crouch.png';
+
+    var iddleR = new Image();
+    iddleR.src = 'img/player/iddle_right.png';
+
+    var runR = new Image();
+    runR.src = 'img/player/runR.gif';
+
+    var run2R = new Image();
+    run2R.src = 'img/player/run-2_right.png';
+
+    var run3R = new Image();
+    run3R.src = 'img/player/run-3_right.png';
+
+    var crouchR = new Image();
+    crouchR.src = 'img/player/crouch_right.png';
+
+    var tileImage = [null , tile, tileTest, tileRoundL, tileRoundR];
+    //==========================================
+   
+    // ================== engine ============
+
+    //controla o player
+	player = {
+		image: iddleR,
+		width: iddleR.width,
+		height: iddleR.height,
+		jump: true,
+		xPos: 80,
+		yPos: 200,
+
+		oldX:0,
+		oldY:0,
+
+		xSpeed:0,
+		ySpeed: 0,
+
+		morreu: function(){
+			if (player.xPos + 40 < 0 || player.xPos - 50 > cvs.width || player.yPos > cvs.height || player.yPos < 0) {
+				alert ('morreu');
+			}
+		},
+	}
+
+	
+
+
+	//definições basicas da engine do game
+	fisica = {
+		moveForce: 1, //força do movimento horizontal
+		jumpForce:25, //força do pulo
+		friccaoV: 0.8, //desaceleração do movimento horizontal
+		gravidadeV: 1.5, //força da gravidade
+		colidiuY: false,
+
+		friccao: function(){
+			player.ySpeed *= fisica.friccaoV;
+		},
+
+		gravidade: function(){
+			player.ySpeed += fisica.gravidadeV;
+		},
+
+		colidir: function(x, y, tipe){
+			y-=50;
+			//tipos de bloco para colidir
+			switch(tipe){
+				//sem bloco
+				case 0:
+	    			break;
+	    		//bloco base
+	    		case 1:
+		    		colisao.topo(x,y);
+			    	break;
+			    //bloco de parede
+				case 2:
+					colisao.topo(x,y);
+					colisao.lados(x,y);
+					colisao.baixo(x,y);
+					break;
+				case 3:
+					colisao.topo(x,y);
+					break;
+				case 4:
+					colisao.topo(x,y);
+					break;
+			}
+		},
+	}
+
+	colisao = {
+		topo: function(x,y){
+			if (player.yPos >=y   && player.yPos <= y+8 && player.xPos+18 >= x-10 && player.xPos+18 <= x + 60) {
+				fisica.colidiuY = true;
+				player.ySpeed = 0;
+				player.jump = false;
+				player.yPos = y;
+				Hitbox.drawColision(x,y);
+			}
+		},
+
+		lados: function(x,y){
+			y+=50;
+			//lado esquerdo
+			if ((player.yPos >= y || player.yPos+47 >= y)  && player.yPos <= y+50 && player.xPos >= x-38 && player.xPos <= x - 28) {
+				player.xSpeed = 0;
+				player.xPos-=1;
+				Hitbox.drawColision(x,y);
+			//lado direito
+			}else if((player.yPos >= y || player.yPos+ 47 >= y)  && player.yPos <= y+50 && player.xPos <= x+51 && player.xPos >= x + 40){
+				player.xSpeed = 0;
+				player.xPos+=1;
+				Hitbox.drawColision(x,y);
+			}
+		},
+
+		baixo: function(x,y){
+			y+=50; //move a hitbox pra baixo do tile
+			if (player.yPos >= y   && player.yPos <= y+50 && player.xPos >= x-30 && player.xPos <= x + 45) {
+				fisica.colidiuY = true;
+				player.ySpeed = 0;
+				player.jump = true;
+				player.yPos = y+50;
+			}
+			
+		},
+	}
+
+
+	//para testar as hitboxes do game
+	Hitbox = {
+		drawHitbox: function(){
+			ctx.drawImage(hitbox,  player.xPos, player.yPos);
+		},
+
+		drawColision: function(xDraw, yDraw){
+			ctx.drawImage(hitbox,  xDraw, yDraw);
+		},
+	}
+
+
+	// define os controles do game
+	controle = {
+		right:false,
+		left:false,
+		jump:false,
+		djump: 0,
+		last:null,
+
+		//event listener para as teclas do jogo
+		mov: function (event){
+			var key = event.keyCode;
+		    
+		    if (event.type == 'keydown') {
+		        keystate = true;
+		    }else{
+		    	keystate = false;
+		    }
+
+	        switch(key){
+	        //eixo x
+	        case 37:
+	            controle.left = keystate;
+	            if (event.type == 'keyup') {
+	            	controle.last = 'left';
+				}
+	            break; 
+	        case 39:
+	        	if (event.type == 'keyup') {
+	            	controle.last = 'right';
+				}
+	            controle.right = keystate;
+	            break; 
+
+	        //eixo y
+	        case 32: 
+	            controle.jump = keystate;
+	            break; 
+	        case 38: 
+	            controle.jump = keystate;
+	            break; 
+	        }
+		},
+
+		//
+		mover: function(){
+			//move para a direita
+			if (controle.right) {
+		    	player.xSpeed += fisica.moveForce;
+	  		}
+
+	  		//move para a esquerda
+	  		if (controle.left) {
+			    player.xSpeed -= fisica.moveForce;
+	  		}
+
+
+
+
+	  		//'trava' o movimento do player quando o mapa esta se movendo
+	  		if (map.movendo) {
+				player.xPos += 0; 
+			}else{
+				player.xPos += player.xSpeed;
+			}
+			
+    		player.xSpeed *= fisica.friccaoV;
+    		if ((player.xSpeed < 0.5 && controle.right) ||(player.xSpeed > -0.8 && controle.left)) {
+    			player.xSpeed = 0;
+    		}
+		},
+
+		pular: function(){
+			//
+	  		if ((controle.jump && player.jump == false)) {
+			    player.ySpeed -= fisica.jumpForce;
+			    controle.djump +=1;
+			    player.jump = true;
+			    fisica.colidiuY = false;
+
+	  		}
+
+    		player.yPos += player.ySpeed;
+		},
+
+		segPulo: function(){
+			//
+	  		if ((controle.jump && player.jump && controle.djump > 0)) {
+			    player.ySpeed -= fisica.jumpForce;
+			    controle.djump = 0;
+			    player.jump = true;
+			    fisica.colidiuY = false;
+
+	  		}
+
+    		
+		}
+	}
+
+	//event listener para os comandos do teclado
+	window.addEventListener('keydown', controle.mov);
+	window.addEventListener('keyup', controle.mov);
+
+
+	//==============================
+	fase = {
+
+		mapping: [	
+			//0      1   2      3     4    5    6    7    8    9    10   11   12   13   14   15  
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//0
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//1
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//2
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//3
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//4
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//5
+			[0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//6
+			[0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//7
+			[0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//8
+			[0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//9
+			[0,0,0,0,0,0,0,3,1,1,1,1,1,1,1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//10
+			[0,0,0,0,0,0,3,1,1,1,1,1,1,1,1,1,4,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],//11
+			[1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,0,0,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],//13
+			
+		],
+	}
+	map = {
+		tamX: 63,
+		tamY: 13, 
+		size: 50,
+		movendo: false,
+		
+		xPos:0,
+		yPos:0,
+
+		xFixo: 0,
+		yFixo: 0,
+
+		tileY: fase.mapping,
+		
+
+		//função que adiciona movimento a tela de acordo com o movimento do jogador (paralax)
+		moverTela: function(){
+			//faz a tela ir para trás
+			if (player.xPos < 100  && controle.left && map.xPos < 0) {
+
+				map.xPos -= player.xSpeed
+				map.movendo = true;
+			//faz a tela ir para a frente 
+			}else if(player.xPos > cvs.width-200 && controle.right  && map.xPos > map.tamX * map.size *-1){
+				map.xPos -= player.xSpeed
+				map.movendo = true;
+			//trava a tela quando está no meio
+			}else{
+				map.movendo = false;
+			}
+		},
+
+		//função que calcula o tamamanho total do mapa
+		mapPos: function(){
+			map.xFixo = map.size * map.tamX; 
+			map.yFixo = map.size * map.tamY; 
+		},
+
+		//função que renderiza o mapa
+		drawMap: function(){
+			//eixo Y
+			for (var y = 0, yDraw = 0; y < map.tamY; y++, yDraw+= map.size) {
+				//eixo X
+				for (var i = 0, xDraw = map.xPos; i < map.tamX; i++, xDraw+= map.size) {
+	    			if(map.tileY[y][i] != 0){
+	    				ctx.drawImage(tileImage[map.tileY[y][i]], xDraw, yDraw);
+	    			}
+					
+					//colisão										
+					fisica.colidir(xDraw, yDraw, map.tileY[y][i]);
+				}	
+				
+				
+    		}
+
+    	}
+	}
+
+
+	// ============== view ===============/
+    //renderiza o game
+    function draw(){
+    	player.oldX = player.xPos; 
+		player.olxY = player.yPos;
+	   	//desenha o fundo - layer 1
+    	ctx.drawImage(fundo, 0,0, cvsWidth, cvsHeight);
+
+    	//desenha o chão - layer 2
+    	map.drawMap();
+
+    	//desenha o player - layer 3
+    	ctx.drawImage(player.image, player.xPos, player.yPos);
+
+
+
+
+
+    	
+    	
+    	fisica.friccao();
+    	fisica.gravidade();
+    	
+
+	   	map.moverTela();
+    	
+
+    	//movimento
+    	controle.mover();
+    	controle.pular();
+    	controle.segPulo();
+    	
+
+    	player.morreu();
+    	
+    	//debug
+		console.log('gravidade:' + fisica.gravidadeV + ' player Y:' + player.yPos + ' colisao:' + fisica.colidiuY + ' pulo ativo:' + player.jump + ' força do pulo:' + fisica.jumpForce + ' Velocidade vert:' + player.ySpeed );
+		//console.log(' pulo ativo:' + player.jump);
+		//console.log('Player X:' + player.xSpeed );
+		console.log(controle.djump);
+    	requestAnimationFrame(draw)
+    }
+
+    //inicia o game
+    draw();
+
+	//=====================================
+	document.body.onload = function(){
+		song.play();
+	}
+
+	
+	
+
+
+</script>
