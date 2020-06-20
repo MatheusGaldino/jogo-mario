@@ -1,16 +1,75 @@
-<canvas id="cvs"></canvas>
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Super Mario - Fase 1</title>
+		<style type="text/css">
+			#cvs{
+				border: 1px solid black;
+				margin: 20px 5%;
+			}
+		
+			#controls, #controlsS{
+				display: block;
+				background-color: darkgray;
+				opacity: 30%;
+				position: absolute;
+				width: 100px;
+				height: 100px;
+				border-radius: 100%;
+				bottom:0;
+			}
 
-<style type="text/css">
-	#cvs{
-		border: 1px solid black;
-		margin: 20px 5%;
-	}
+			
 
-</style>
+			#controlsS{
+				right: 0px;
+				bottom:0;
+			}
 
-<script type="text/javascript" src="maps/fase-1.js"></script>
-<script type="text/javascript" src="mapRender.js"></script>
-<script type="text/javascript" src="gameObjects.js"></script>
-<script type="text/javascript" src="engine.js"></script>
-<script type="text/javascript" src="input.js"></script>
-<script type="text/javascript" src="game.js"></script>
+			button{
+				display: block;
+				width: 40%;
+				float: left;
+				height: 25px;
+			}
+
+			#btnUp, #btnDown{
+				margin-left: 30%;
+			}
+
+			#btnLeft{
+				margin: auto 3.3% auto 6.6%;
+			}
+
+		
+		</style>
+	</head>
+	<body>
+		<canvas id="cvs"></canvas>
+		<div id="controls" class="controls">
+			<button id="btnUp">^</button>
+			<button id="btnLeft"><</button>
+			<button id="btnRight">></button>
+			<button id="btnDown">v</button>
+		</div>
+		<div id="controlsS" class="controls">
+			<button id="btnJump">↑</button>
+			<button id="btnFire">🔥</button>
+		</div>
+		
+		<script type="text/javascript" src="maps/fase-1.js"></script>
+		<script type="text/javascript" src="input.js"></script>
+
+		<script type="text/javascript" src="mapRender.js"></script>
+		<script type="text/javascript" src="gameObjects.js"></script>
+		<script type="text/javascript" src="animations.js"></script>
+		<script type="text/javascript" src="engine.js"></script>
+		<script type="text/javascript" src="game.js"></script>
+	</body>
+</html>
+
+
+
+
+

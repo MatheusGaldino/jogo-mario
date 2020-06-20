@@ -9,7 +9,7 @@ var song = document.createElement('audio');
 
 	//seta resolução do game
 	var cvs = document.getElementById('cvs');
-    var windowW = window.innerWidth - 20;
+    var windowW = window.innerWidth - 40;
     var windowH = window.innerHeight;
     var ctx = cvs.getContext('2d');
 
@@ -19,7 +19,7 @@ var song = document.createElement('audio');
     var cvsWidth = cvs.width;
     var cvsHeight = cvs.height;
 
-
+	
     
 
 
@@ -33,8 +33,8 @@ var song = document.createElement('audio');
     	player.oldX = player.xPos; 
 		player.olxY = player.yPos;
 	   	//desenha o fundo - layer 1
-    	ctx.drawImage(fundo, 0,0, cvsWidth, cvsHeight);
-
+    	//ctx.drawImage(fundo, 0,0, cvsWidth, cvsHeight);
+		mapRender.drawFundo()
     	//desenha o chão - layer 2
     	mapRender.drawMap();
     	mapRender.moverTela();
@@ -42,35 +42,32 @@ var song = document.createElement('audio');
 
     	fisica.friccao();
     	fisica.gravidade();
-    	colisao.definirColisao()
+    	colisao.mapColidir()
     	
 
     	//desenha o player - layer 3
-    	ctx.drawImage(player.image, player.xPos, player.yPos);
-
-
-
-
-    	
-    	
-    	
-	   	
-    	
+		ctx.drawImage(player.image, player.xPos, player.yPos);
+	
 
     	//movimento
     	player.mover();
     	player.pular();
-    	//	controle.segPulo();
+    	//controle.segPulo();
     	
 
     	player.morreu();
-    	
+    	animacao.player()
+		animacao.contar()
+		
+
+
     	//debug
 		//console.log('gravidade:' + fisica.gravidadeV + ' player Y:' + player.yPos + ' colisao:' + fisica.colidiuY + ' pulo ativo:' + player.jump + ' força do pulo:' + fisica.jumpForce + ' Velocidade vert:' + player.ySpeed );
 		//console.log(' pulo ativo:' + player.jump);
 		//console.log('Player X:' + player.xSpeed );
 		//console.time();
-    	//loop
+		//loop
+		//console.log(controle.down)
     	requestAnimationFrame(draw)
     }
 

@@ -1,114 +1,219 @@
-// ================== engine ============
-	//definições basicas da engine do game
+//definições basicas da engine do game
 
-	//fisica do jogo
-	fisica = {
-		moveForce: 1, //força do movimento horizontal
-		jumpForce:25, //força do pulo
-		friccaoV: 0.8, //desaceleração do movimento horizontal
-		gravidadeV: 1.5, //força da gravidade
-		colidiuY: false,
+//fisica do jogo
+fisica = {
+	moveForce: 1, //força do movimento horizontal
+	jumpForce:25, //força do pulo
+	friccaoV: 0.8, //desaceleração do movimento horizontal
+	gravidadeV: 1.5, //força da gravidade
+	colidiuY: false,
 
-		friccao(){
-			player.ySpeed *= fisica.friccaoV;
-		},
+	friccao(){
+		player.ySpeed *= fisica.friccaoV;
+	},
 
-		gravidade(){
-			player.ySpeed += fisica.gravidadeV;
-		},
+	gravidade(){
+		player.ySpeed += fisica.gravidadeV;
+	},
 
-		colidir(x, y, tipe){
-			y-=50;
-			//tipos de bloco para colidir
-			switch(tipe){
-				//sem bloco
-				case 0:
-	    			break;
-	    		//bloco base
-	    		case 1:
-		    		colisao.topo(x,y);
-			    	break;
-			    //bloco de parede
-				case 2:
-					colisao.topo(x,y);
-					colisao.lados(x,y);
-					colisao.baixo(x,y);
-					break;
-				case 3:
-					colisao.topo(x,y);
-					break;
-				case 4:
-					colisao.topo(x,y);
-					break;
-			}
-		},
-	}
+	colidir(x, y, tipe){
+		y-=50;
+		//tipos de bloco para colidir
+		switch(tipe){
+			//sem bloco
+			case 0:
+				break;
+			//bloco base
+			case 1:
+				if(colisao.topo(x,y)){
+					colisao.tileYHit(y)
+				}
+				break;
+			//bloco base transponivel
+			case 2:
+				if(colisao.topoTransponivel(x,y)){
+					colisao.tileYHit(y)
+				}
+				break;
+			//bloco de parede
+			case 3:
+				if(colisao.topo(x,y)){
+					colisao.tileYHit(y)
+				}
+				if(colisao.left(x,y)){
+					colisao.tileLeftHit(y)
+				}
+				if(colisao.right(x,y)){
+					colisao.tileRightHit(y)
+				}
+				if(colisao.baixo(x,y)){
+					colisao.tileYLowHit(y)
+				}
+				break;
+			case 4:
+				if(colisao.topoTransponivel(x,y)){
+					colisao.tileYHit(y)
+				}
+				break;
+			case 5:
+				if(colisao.topoTransponivel(x,y)){
+					colisao.tileYHit(y)
+				}
+				break
+			case 6:
+				if(colisao.topo(x,y)){
+					colisao.tileYHit(y)
+				}
+				if(colisao.left(x,y)){
+					colisao.tileLeftHit(y)
+				}
+				if(colisao.right(x,y)){
+					colisao.tileRightHit(y)
+				}
+			case 7:
+				if(colisao.topo(x,y)){
+					colisao.tileYHit(y)
+				}
+				if(colisao.left(x,y)){
+					colisao.tileLeftHit(y)
+				}
+				if(colisao.right(x,y)){
+					colisao.tileRightHit(y)
+				}
+				break;
+		}
+	},
+}
 
-	//colisões do jogo
-	colisao = {
-		//colisão com parte superior de um tile
-		topo(x,y){
-			if (player.yPos >=y   && player.yPos <= y+8 && player.xPos+18 >= x-10 && player.xPos+18 <= x + 60) {
-				fisica.colidiuY = true;
-				player.ySpeed = 0;
-				player.jump = false;
-				player.yPos = y;
-				Hitbox.drawColision(x,y); //hitbox debug
-			}
-		},
+//colisões do jogo
+colisao = {
+	//define comportamento das colisões ao atingir as hitboxes
+	tileYHit(y){
+		fisica.colidiuY = true;
+		player.ySpeed = 0;
+		player.jump = false;
+		player.yPos = y;
+		//Hitbox.drawColision(xCol,yCol); //hitbox debug
+	},
 
-		//colisão com as laterais de um tile
-		lados(x,y){
-			y+=50;
-			//lado esquerdo
-			if ((player.yPos >= y || player.yPos+47 >= y)  && player.yPos <= y+50 && player.xPos >= x-38 && player.xPos <= x - 28) {
-				player.xSpeed = 0;
-				player.xPos-=1;
-				Hitbox.drawColision(x,y);
-			//lado direito
-			}else if((player.yPos >= y || player.yPos+ 47 >= y)  && player.yPos <= y+50 && player.xPos <= x+51 && player.xPos >= x + 40){
-				player.xSpeed = 0;
-				player.xPos+=1;
-				Hitbox.drawColision(x,y); //hitbox debug
-			}
-		},
+	tileLeftHit(x){
+		player.xSpeed = 0;
+		player.xPos-=2;
+		//Hitbox.drawColision(xCol,yCol);
+	},
+	tileRightHit(x){
+		player.xSpeed = 0;
+		player.xPos+=2;;
+		//Hitbox.drawColision(xCol,yCol);
+	},
+	
 
-		//colisão com a parte inferior de um tile
-		baixo(x,y){
-			y+=50; //move a hitbox pra baixo do tile
-			if (player.yPos >= y   && player.yPos <= y+50 && player.xPos >= x-30 && player.xPos <= x + 45) {
-				fisica.colidiuY = true;
-				player.ySpeed = 0;
-				player.jump = true;
-				player.yPos = y+50;
-				Hitbox.drawColision(x,y); //hitbox debug
-			}
+	tileYLowHit(y){
+		fisica.colidiuY = true;
+		player.ySpeed = 0;
+		player.jump = false;
+		player.yPos = y;
+		//Hitbox.drawColision(xCol,yCol); //hitbox debug
+	},
+
+	//colisão com parte superior de um tile
+	topo(xCol,yCol){
+		if (player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+6 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60) {
 			
-		},
+			return true
+			//Hitbox.drawColision(xCol,yCol); //hitbox debug
+		}
+	},
 
-		tileFase: fase.mapping, //load do arquivo da fase
-		definirColisao(){
-			//eixo Y
-			for (let y = 0, yDraw = 0; y < mapRender.tamY; y++, yDraw+= mapRender.size) {
-				//eixo X
-				for (let i = 0, xDraw = mapRender.xPos; i < mapRender.tamX; i++, xDraw+= mapRender.size) {
-	    								
-					//colisão	VER OQ FAZER									
-					fisica.colidir(xDraw, yDraw, mapRender.tileFase[y][i]);
-				}	
-    		}
-    	}
+	topoTransponivel(xCol,yCol){
+		if (!controle.down) {
+			if(player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+6 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60){
+				return true
+			}
+		}
+	},
 
+	//colisão com as laterais de um tile
+	left(xCol,yCol){
+		yCol+=50;
+		//lado esquerdo
+		if ((player.yPos >= yCol || player.yPos+47 >= yCol)  && player.yPos <= yCol+50 && player.xPos >= xCol-38 && player.xPos <= xCol - 28) {
+			return true
+		//lado direito
+		}
+	},
+
+	right(xCol,yCol){
+		yCol+=50;
+		//lado esquerdo
+		if((player.yPos >= yCol || player.yPos+ 47 >= yCol)  && player.yPos <= yCol+50 && player.xPos <= xCol+51 && player.xPos >= xCol + 40){
+			return true
+			//Hitbox.drawColision(xCol,yCol); //hitbox debug
+		}
+	},
+
+	
+
+	//colisão com a parte inferior de um tile
+	baixo(xCol,yCol){
+		yCol+=50; //move a hitbox pra baixo do tile
+		if (player.ySpeed < 0.3 && player.yPos >= yCol   && player.yPos <= yCol+50 && player.xPos >= xCol-30 && player.xPos <= xCol + 45) {
+			fisica.colidiuY = true;
+			player.ySpeed = 0;
+			player.jump = true;
+			player.yPos = yCol+50;
+			//Hitbox.drawColision(xCol,yCol); //hitbox debug
+		}
+		
+	},
+
+	tileFase: fase.mapping, //load do arquivo da fase
+	mapColidir(){
+		//eixo Y                MUDAR AQUI AJUSTE RESOLUÇÃO
+		for (let y = 0, yDraw = 0; y < mapRender.tamY; y++, yDraw+= mapRender.size) {
+			//eixo X
+			for (let i = 0, xDraw = mapRender.xPos; i < mapRender.tamX; i++, xDraw+= mapRender.size) {
+				//colisão									
+				fisica.colidir(xDraw, yDraw, mapRender.tileFase[y][i]);
+			}	
+		}
 	}
+}
 
 
-	//para testar as hitboxes do game (debug)
-	Hitbox = {
-		drawHitbox(){
-			ctx.drawImage(hitbox,  player.xPos, player.yPos);
-		},
 
-		drawColision(xDraw, yDraw){
-			ctx.drawImage(hitbox,  xDraw, yDraw);
-		},
-	}
+Hitbox = {
+	
+	drawHitbox(){
+		//ctx.drawImage(hitbox,  player.xPos, player.yPos);
+	},
+
+	drawColision(xDraw, yDraw){
+		//ctx.drawImage(hitbox,  xDraw, yDraw);
+	},
+}
+
+
+
+//verifica se a plataforma utilizada é mobile
+var isMobile = {
+    Android() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+var device = isMobile.any()?'mobile':'pc'
