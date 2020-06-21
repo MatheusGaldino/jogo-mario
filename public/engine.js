@@ -101,12 +101,10 @@ colisao = {
 	tileLeftHit(x){
 		player.xSpeed = 0;
 		player.xPos-=2;
-		//Hitbox.drawColision(xCol,yCol);
 	},
 	tileRightHit(x){
 		player.xSpeed = 0;
 		player.xPos+=2;;
-		//Hitbox.drawColision(xCol,yCol);
 	},
 	
 
@@ -115,13 +113,11 @@ colisao = {
 		player.ySpeed = 0;
 		player.jump = false;
 		player.yPos = y;
-		//Hitbox.drawColision(xCol,yCol); //hitbox debug
 	},
 
 	//colisão com parte superior de um tile
 	topo(xCol,yCol){
 		if (player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+50 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60) {
-			//Hitbox.drawColision(xCol,yCol); //hitbox debug
 			
 			return true
 		}
@@ -150,7 +146,6 @@ colisao = {
 		//lado esquerdo
 		if((player.yPos >= yCol || player.yPos+ 47 >= yCol)  && player.yPos <= yCol+50 && player.xPos <= xCol+51 && player.xPos >= xCol + 40){
 			return true
-			//Hitbox.drawColision(xCol,yCol); //hitbox debug
 		}
 	},
 
@@ -164,7 +159,6 @@ colisao = {
 			player.ySpeed = 0;
 			player.jump = true;
 			player.yPos = yCol+50;
-			//Hitbox.drawColision(xCol,yCol); //hitbox debug
 		}
 		
 	},
@@ -184,12 +178,11 @@ colisao = {
 
 
 
+//desenha as hitboxes (para debug apenas)
 Hitbox = {
-	
 	drawHitbox(){
 		//ctx.drawImage(hitbox,  player.xPos, player.yPos);
 	},
-
 	drawColision(xDraw, yDraw){
 		//ctx.drawImage(hitbox,  xDraw, yDraw);
 	},

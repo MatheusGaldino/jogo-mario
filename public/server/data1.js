@@ -1,1 +1,1 @@
-{"player1":{"xPos":1381,"yPos":550,"image":"antonio","id":"p1"}}
+{"player1":{"xPos":80,"yPos":550,"image":"antonio","id":"p1"}}

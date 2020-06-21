@@ -29,6 +29,7 @@
                     //player2.image = myObj.imageSrc
                 }
             }
+            console.log(this.responseText)
         }
         xhttp.open("GET", `./server/multiplayer.php?x=${player.xFull}&y=${player.yFull}&id=${multiplayer.id}`, true);
         xhttp.send();

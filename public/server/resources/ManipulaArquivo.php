@@ -14,7 +14,11 @@ class ManipulaArquivo{
     //abre e lê arquivo JSON com os dados dos players
     public function lerJson($op){
         $jsonFile = fopen($this->path, 'r');
-        $data = fread($jsonFile, filesize($this->path));
+        if (filesize($this->path)>0) {
+            $data = fread($jsonFile, filesize($this->path));
+        }else{
+            $data = '';
+        }
         if($jsonObj = json_decode($data)){
             fclose($jsonFile);
             return $jsonObj;

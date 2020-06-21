@@ -22,11 +22,13 @@ mapRender = {
 		//faz o render do mapa acompanhar o movimento do player para trás
 		if (player.xPos < 200  && controle.left && mapRender.xPos < 0) {
 			mapRender.xPos -= player.xSpeed
+			player2.xPos -= player.xSpeed
 			mapRender.movendo = true;
 			
 		//faz o render do mapa acompanhar o movimento do player para frente
 		}else if(player.xPos > cvs.width-250 && controle.right  && mapRender.xPos > mapRender.xFixo *-1){
 			mapRender.xPos -= player.xSpeed
+			player2.xPos -= player.xSpeed
 			mapRender.movendo = true;
 			
 		//trava a tela quando player está no meio
