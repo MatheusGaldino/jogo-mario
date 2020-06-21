@@ -2,20 +2,25 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
 		<title>Super Mario - Fase 1</title>
 		<style type="text/css">
+			*{
+				box-sizing: border-box;
+			}
 			#cvs{
 				border: 1px solid black;
 				margin: 20px 5%;
 			}
 		
 			#controls, #controlsS{
+				padding-top: 25px;
 				display: block;
-				background-color: darkgray;
-				opacity: 30%;
+				background-color: rgba(140, 140, 140, 0.4);
+				opacity: 80%;
 				position: absolute;
-				width: 100px;
-				height: 100px;
+				width: 200px;
+				height: 200px;
 				border-radius: 100%;
 				bottom:0;
 			}
@@ -28,10 +33,16 @@
 			}
 
 			button{
+				background-color: rgba(0, 0, 255, 0);
+				border: 0;
+				color: white;
+				font-size: 40pt;
+				opacity: 100%;
+				font-weight: bold;
 				display: block;
 				width: 40%;
 				float: left;
-				height: 25px;
+				height: 50px;
 			}
 
 			#btnUp, #btnDown{
@@ -60,12 +71,14 @@
 		
 		<script type="text/javascript" src="maps/fase-1.js"></script>
 		<script type="text/javascript" src="input.js"></script>
+		<script type="text/javascript" src="online.js"></script>
 
 		<script type="text/javascript" src="mapRender.js"></script>
 		<script type="text/javascript" src="gameObjects.js"></script>
 		<script type="text/javascript" src="animations.js"></script>
 		<script type="text/javascript" src="engine.js"></script>
 		<script type="text/javascript" src="game.js"></script>
+		<span></span>
 	</body>
 </html>
 

@@ -71,12 +71,16 @@ var tileImage = [null , tile, tile, tileTest, tileRoundL, tileRoundR, tileRoundR
 //controla o player
 player = {
 	image: iddleR,
+	imageSpr: 'iddleR',
 	width: iddleR.width,
 	height: iddleR.height,
 	andando: false,
 	jump: true,
+	numJump: 0,
 	xPos: 80,
 	yPos: 200,
+	xFull: 80,
+	yFull: 200,
 	morto: false,
 
 	xSpeed:0,
@@ -113,34 +117,45 @@ player = {
 		}else{
 			player.xPos += player.xSpeed;
 		}
+		player.xFull += player.xSpeed;
+		if (controle.right) {
+			//player.xFull -= player.xPos
+		} else {
+			//player.xFull += player.xPos
+		}
+		
 		
 		//adiciona a frição ao movimento, zerando a xSpeed ao soltar o botão
 		player.xSpeed *= fisica.friccaoV; //calculo exponecial q reduz a velocidade
 		if ((player.xSpeed < 0.5 && controle.right) ||(player.xSpeed > -0.8 && controle.left)) {
 			player.xSpeed = 0; //zera a velocidade de mov quando é menor q 0.5 de speed
 		}
+		
+
 	},
 
 	pular(){
 		//executa um pulo simples
-		if ((controle.jump && player.jump == false)) {
+		if (player.numJump <= 1 && controle.jump && player.jump == false) {
 			player.ySpeed -= fisica.jumpForce;
 			controle.djump +=1;
 			player.jump = true;
 			fisica.colidiuY = false;
+			fisica.colidiuTopo = false;
+			player.numJump++;
+		}else if(!controle.jump && player.jump == true){
+			player.jump = false;
 		}
+
+		if(fisica.colidiuTopo){
+			player.numJump = 0
+		}
+
 		player.yPos += player.ySpeed;
+		player.yFull = player.yPos;
 	},
 
-	segPulo(){
-		//
-		if ((controle.jump && player.jump && controle.djump > 0)) {
-			player.ySpeed -= fisica.jumpForce;
-			controle.djump = 0;
-			player.jump = true;
-			fisica.colidiuY = false;
-		}
-	},
+	
 
 	abaixar(){
 		//desce um bloco desativando a colisão
@@ -150,5 +165,24 @@ player = {
 			player.jump = true;
 			fisica.colidiuY = false;
 		}
+	},
+
+	render(){
+		ctx.drawImage(player.image, player.xPos, player.yPos);
+	}
+
+}
+
+
+player2 = {
+    id:'p2',
+    image:iddleR,
+    xPos: 80,
+	yPos: 200,
+	xFull: 80,
+	yFull: 200,
+
+	render(){
+		ctx.drawImage(player2.image, player2.xFull, player2.yFull);
 	}
 }

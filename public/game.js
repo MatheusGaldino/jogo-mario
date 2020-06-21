@@ -30,10 +30,8 @@ var song = document.createElement('audio');
 	// ============== view ===============/
     //renderiza o game
     function draw(){
-    	player.oldX = player.xPos; 
-		player.olxY = player.yPos;
+    	
 	   	//desenha o fundo - layer 1
-    	//ctx.drawImage(fundo, 0,0, cvsWidth, cvsHeight);
 		mapRender.drawFundo()
     	//desenha o chão - layer 2
     	mapRender.drawMap();
@@ -46,24 +44,24 @@ var song = document.createElement('audio');
     	
 
     	//desenha o player - layer 3
-		ctx.drawImage(player.image, player.xPos, player.yPos);
-	
+		player.render()
+		player2.render()
 
     	//movimento
     	player.mover();
     	player.pular();
-    	//controle.segPulo();
-    	
+	
+		
 
     	player.morreu();
     	animacao.player()
 		animacao.contar()
 		
-
+		multiplayer.requestOnline()
 
     	//debug
 		//console.log('gravidade:' + fisica.gravidadeV + ' player Y:' + player.yPos + ' colisao:' + fisica.colidiuY + ' pulo ativo:' + player.jump + ' força do pulo:' + fisica.jumpForce + ' Velocidade vert:' + player.ySpeed );
-		//console.log(' pulo ativo:' + player.jump);
+		//console.log(' pulo ativo:' + player.numJump);
 		//console.log('Player X:' + player.xSpeed );
 		//console.time();
 		//loop

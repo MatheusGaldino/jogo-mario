@@ -23,10 +23,12 @@ mapRender = {
 		if (player.xPos < 200  && controle.left && mapRender.xPos < 0) {
 			mapRender.xPos -= player.xSpeed
 			mapRender.movendo = true;
+			
 		//faz o render do mapa acompanhar o movimento do player para frente
 		}else if(player.xPos > cvs.width-250 && controle.right  && mapRender.xPos > mapRender.xFixo *-1){
 			mapRender.xPos -= player.xSpeed
 			mapRender.movendo = true;
+			
 		//trava a tela quando player está no meio
 		}else{
 			mapRender.movendo = false;
@@ -53,6 +55,7 @@ mapRender = {
 	drawFundo(){
 		//proporciona a largura da imagem de acordo com o tamanho do canvas
 		mapRender.xFundo = cvsHeight * 1.7633
+		
 		//checa se o player esta se movendo para renderizar o movimento
 		if (controle.right&&player.xSpeed > 2) {
 			mapRender.fundoRender--
@@ -66,6 +69,5 @@ mapRender = {
 			ctx.drawImage(layer2, x + (mapRender.fundoRender/3)-20,0, mapRender.xFundo, cvsHeight);
 			ctx.drawImage(layer1, x + (mapRender.fundoRender/1.15)-20,0, mapRender.xFundo, cvsHeight);
 		}
-		
 	}
 }

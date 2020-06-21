@@ -7,6 +7,7 @@ fisica = {
 	friccaoV: 0.8, //desaceleração do movimento horizontal
 	gravidadeV: 1.5, //força da gravidade
 	colidiuY: false,
+	colidiuTopo: false,
 
 	friccao(){
 		player.ySpeed *= fisica.friccaoV;
@@ -90,6 +91,7 @@ colisao = {
 	//define comportamento das colisões ao atingir as hitboxes
 	tileYHit(y){
 		fisica.colidiuY = true;
+		fisica.colidiuTopo = true;
 		player.ySpeed = 0;
 		player.jump = false;
 		player.yPos = y;
@@ -118,16 +120,16 @@ colisao = {
 
 	//colisão com parte superior de um tile
 	topo(xCol,yCol){
-		if (player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+6 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60) {
+		if (player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+50 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60) {
+			//Hitbox.drawColision(xCol,yCol); //hitbox debug
 			
 			return true
-			//Hitbox.drawColision(xCol,yCol); //hitbox debug
 		}
 	},
 
 	topoTransponivel(xCol,yCol){
 		if (!controle.down) {
-			if(player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+6 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60){
+			if(player.ySpeed > 0.5 && player.yPos >= yCol && player.yPos <= yCol+8 && player.xPos+18 >= xCol-10 && player.xPos+18 <= xCol + 60){
 				return true
 			}
 		}

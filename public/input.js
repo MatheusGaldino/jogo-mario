@@ -77,37 +77,50 @@ controlArrow.style.display = 'block'
 controlBtns.style.display = 'block'
 mobileControls()
 function mobileControls() {
-	btnLeft.ontouchstart = function () {
+	btnLeft.ontouchstart = function (ev) {
 		controle.left = true
+		ev.preventDefault()
 	}
-	btnLeft.ontouchend = function () {
+	btnLeft.ontouchend = function (ev) {
 		controle.left = false
+		ev.preventDefault()
 	}
 
 
-	btnRight.ontouchstart = function () {
+	btnRight.ontouchstart = function (ev) {
 		controle.right = true
+		ev.preventDefault()
 	}
-	btnRight.ontouchend = function () {
+	btnRight.ontouchend = function (ev) {
 		controle.right = false
+		ev.preventDefault()
 	}
 
 
-	btnUp.ontouchstart = function () {
+	btnUp.ontouchstart = function (ev) {
 		controle.jump = true
+		ev.preventDefault()
 	}
-	btnUp.ontouchend = function () {
+	btnUp.ontouchend = function (ev) {
 		controle.jump = false
+		ev.preventDefault()
 	}
-	btnJump.ontouchstart = function () {
+	btnJump.ontouchstart = function (ev) {
 		controle.jump = true
+		ev.preventDefault()
 	}
-	btnJump.ontouchend = function () {
+	btnJump.ontouchend = function (ev) {
 		controle.jump = false
+		ev.preventDefault()
 	}
 
 
-	btnDown.onclick = function () {
-		controle.down = keystate
+	btnDown.ontouchstart = function (ev) {
+		controle.down = true
+		ev.preventDefault()
+	}
+	btnDown.ontouchend = function (ev) {
+		controle.down = false
+		ev.preventDefault()
 	}
 }
