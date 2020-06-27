@@ -1,6 +1,8 @@
 <?php
 namespace Online;
-
+/*
+* SUBSTITUIR ISSO PRA UMA CONEXÃO COM WEBSOCKET
+*/
 require_once('resources/ManipulaArquivo.php');
 require_once('resources/Multiplayer.php');
 

@@ -1,5 +1,7 @@
 
-  
+/*
+* SUBSTITUIR ISSO PRA UMA CONEXÃO COM WEBSOCKET
+*/  
 
   multiplayer = {
       id: 'default',
